@@ -1,4 +1,5 @@
-use std::error::Error;
+mod todo_list;
+use todo_list::TodoList;
 
 pub struct Config {
     function: String,
@@ -21,19 +22,19 @@ impl Config {
             params: Some(args_clone),
         })
     }
-
-    pub fn add(&self) {}
-    pub fn remove(&self) {}
-    pub fn done(&self) {}
-    pub fn list(&self) {}
 }
 
-pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
+pub fn run(config: Config) -> Result<(), &'static str> {
+    let todo_list = match TodoList::build() {
+        Ok(todo_list) => todo_list,
+        Err(err) => return Err(err),
+    };
+
     match config.function.as_str() {
-        "add" => config.add(),
-        "remove" => config.remove(),
-        "done" => config.done(),
-        "list" => config.list(),
+        "add" => todo_list.add(),
+        "remove" => todo_list.remove(),
+        "done" => todo_list.done(),
+        "list" => todo_list.list(),
         _ => unreachable!(),
     };
 
