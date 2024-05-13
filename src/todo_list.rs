@@ -1,10 +1,5 @@
 use rusqlite::Connection;
 
-enum Task {
-    Priority(u8),
-    Description(String),
-}
-
 const DB_PATH: &str = "./todo_list.db3";
 
 pub struct TodoList {
@@ -14,13 +9,34 @@ pub struct TodoList {
 impl TodoList {
     pub fn build() -> Result<TodoList, &'static str> {
         match Connection::open(DB_PATH) {
-            Ok(db_conn) => Ok(TodoList { db_conn }),
+            Ok(db_conn) => {
+                let _ = db_conn.execute(
+                    "create table if not exists tasks (
+                        id integer primary key,
+                        description text not null unique
+                    )",
+                    (),
+                );
+                Ok(TodoList { db_conn })
+            }
             Err(_) => Err("Database connection failed"),
         }
     }
 
-    pub fn add(&self) {}
-    pub fn remove(&self) {}
-    pub fn done(&self) {}
-    pub fn list(&self) {}
+    pub fn add(&self) -> Result<(), &'static str> {
+        Ok(())
+    }
+    
+    pub fn remove(&self) -> Result<(), &'static str> {
+        Ok(())
+    }
+    
+    pub fn done(&self) -> Result<(), &'static str> {
+        Ok(())
+    }
+    
+    pub fn list(&self) -> Result<(), &'static str> {
+        Ok(())
+    }
+    
 }
