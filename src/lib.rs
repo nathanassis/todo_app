@@ -2,8 +2,8 @@ mod todo_list;
 use todo_list::TodoList;
 
 pub struct Config {
-    function: String,
-    params: Option<Vec<String>>,
+    pub function: String,
+    pub params: Vec<String>,
 }
 
 impl Config {
@@ -11,7 +11,7 @@ impl Config {
         if args.len() == 1 {
             return Ok(Config {
                 function: String::from("list"),
-                params: None,
+                params: vec![],
             });
         }
 
@@ -19,8 +19,27 @@ impl Config {
         args_clone.remove(0);
         Ok(Config {
             function: args_clone.remove(0),
-            params: Some(args_clone),
+            params: Self::parse_params(args_clone),
         })
+    }
+
+    fn parse_params(params: Vec<String>) -> Vec<String> {
+        let mut param = String::new();
+        let mut new_params: Vec<String> = Vec::new();
+
+        for p in params {
+            if p.ends_with(",") {
+                param.push_str(&p.as_str()[..p.len() - 1]);
+                new_params.push(param);
+                param = String::new();
+            } else {
+                param.push_str((p + " ").as_str());
+            }
+        }
+        param.pop();
+        new_params.push(param);
+
+        new_params
     }
 }
 
@@ -36,7 +55,5 @@ pub fn run(config: Config) -> Result<(), &'static str> {
         "done" => todo_list.done(),
         "list" => todo_list.list(),
         _ => unreachable!(),
-    };
-
-    Ok(())
+    }
 }
