@@ -2,8 +2,8 @@ mod todo_list;
 use todo_list::TodoList;
 
 pub struct Config {
-    pub function: String,
-    pub params: Vec<String>,
+    function: String,
+    params: Vec<String>,
 }
 
 impl Config {
@@ -50,9 +50,8 @@ pub fn run(config: Config) -> Result<(), &'static str> {
     };
 
     match config.function.as_str() {
-        "add" => todo_list.add(),
-        "remove" => todo_list.remove(),
-        "done" => todo_list.done(),
+        "add" => todo_list.add(&config.params),
+        "remove" => todo_list.remove(&config.params),
         "list" => todo_list.list(),
         _ => unreachable!(),
     }
